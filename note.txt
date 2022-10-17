@@ -1,0 +1,48 @@
+* Install & Run MySQL (docker)
+docker run -d --name mysql --privileged=true -e MYSQL_ROOT_PASSWORD="quac" -e MYSQL_USER="food_delivery" -e MYSQL_PASSWORD="quac" -e MYSQL_DATABASE="food_delivery" -p 3306:3306 bitnami/mysql:5.7
+
+* Index in DB
+- Primary key is index
+- Select faster but insert, delete slower
+
+CREATE TABLE `restaurants` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `owner_id` int(11) NULL,
+  `name` varchar(50) NOT NULL,
+  `addr` varchar(255) NOT NULL,
+  `city_id` int(11) DEFAULT NULL,
+  `lat` double DEFAULT NULL,
+  `lng` double DEFAULT NULL,
+  `cover` json NULL,
+  `logo` json NULL,
+  `shipping_fee_per_km` double DEFAULT '0',
+  `status` int(11) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `owner_id` (`owner_id`) USING BTREE,
+  KEY `city_id` (`city_id`) USING BTREE,
+  KEY `status` (`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+GET /tasks - display all tasks
+POST /tasks - create a new task
+GET /tasks/{id} - display a task by ID
+PUT /tasks/{id} - update a task by ID
+DELETE /tasks/{id} - delete a task by ID
+
+Hàm có IO nên truyền context -> giúp tracing
+
+* Clean Architecture
+- model chứa các model, struct, thực thể trong ứng dụng
+- storage thao tác trực tiếp với DB (CRUD)
+- biz thao tác vơi storage và thêm các bisiness logic code
+- transport gọi tới biz để thực hiện các chức năng
+- ropository tổng hợp dữ liệu, đi lấy dữ liệu từ nơi khác
+
+* Error handling
+- another language -> try/catch / golang -> panic / recover
+- F calls panic -> execute of F stops , nhưng deffered functions trong F thực thi
+- Recover function giúp lấy được control của panicking
+- Recover only useful inside deffered functions

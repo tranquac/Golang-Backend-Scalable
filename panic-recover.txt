@@ -1,0 +1,43 @@
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("hello, playGround")
+	f1()
+}
+
+func f1() {
+	fmt.Println("f1 runs ok")
+	defer func() {
+    		if r := recover(); r != nil {
+    			fmt.Println("Recovered in f3:", r)
+    		}
+    	}()
+	f2()
+}
+
+func f2() {
+	fmt.Println("f2 runs ok")
+
+	f3()
+}
+
+func f3() {
+	fmt.Println("f3 call panic")
+
+	// panic ("error from f3")
+
+	arr := []int{}
+	fmt.Println(arr[0])
+}
+
+// main -> f1 -> f2 -> f3
+
+f3 panic trace ngược để tìm recover
+
+Hello, PlayGround
+f1 runs ok
+f2 runs ok
+f3 call panic
+Recovered in f3: error from f3
